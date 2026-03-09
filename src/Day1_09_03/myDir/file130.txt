@@ -1,0 +1,3 @@
+A comparator is used to define custom sorting logic.
+It is part of the java.util package.
+Comparators allow sorting objects based on different attributes.

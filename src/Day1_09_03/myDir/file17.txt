@@ -1,0 +1,3 @@
+Multithreading allows multiple parts of a program to run concurrently.
+This improves CPU utilization and performance.
+However, proper synchronization is necessary.

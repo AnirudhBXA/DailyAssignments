@@ -7,6 +7,12 @@ public class SingleThreadImplementation {
 
     public static void main(String[] args) {
 
+        long start = System.currentTimeMillis();
+
+        int totalLines = 0;
+        int totalWords = 0;
+        int totalFiles = 0;
+
         File directory = new File("C:\\Users\\MyakamAnirudh\\Desktop\\DailyAssignments\\src\\Day1_09_03\\myDir");
 
         File[] files = directory.listFiles();
@@ -20,7 +26,8 @@ public class SingleThreadImplementation {
                 .filter( (file) -> {
                     return file.getName().endsWith(".txt");
                 })
-                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .sorted(new FileSortingComparator())
+                .limit(100)
                 .toArray(File[]::new);
 
         for (File file : files) {
@@ -45,9 +52,23 @@ public class SingleThreadImplementation {
                 }
 
                 System.out.println("Lines : " + lineCount + "\n" + "Words : " + wordCount);
+
+                totalLines += lineCount;
+                totalWords += wordCount;
+                totalFiles++;
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
         }
+
+        System.out.println("----------------\n    Summary\n----------------");
+        System.out.println("Total Lines : " + totalLines
+                + "\n" + "Total Words : " + totalWords
+                + "\n" + "Total Files : " + totalFiles
+        );
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Execution time: " + (end - start) + " ms");
     }
 }

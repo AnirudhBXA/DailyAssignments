@@ -49,6 +49,8 @@ public class MultiThreadImplementation {
 
     public static void main(String[] args) throws InterruptedException {
 
+        long start = System.currentTimeMillis();
+
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
         File directory = new File("C:\\Users\\MyakamAnirudh\\Desktop\\DailyAssignments\\src\\Day1_09_03\\myDir");
@@ -64,7 +66,7 @@ public class MultiThreadImplementation {
                 .filter( (file) -> {
                     return file.getName().endsWith(".txt");
                 })
-                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .sorted(new FileSortingComparator())
                 .limit(100)
                 .toArray(File[]::new);
 
@@ -82,5 +84,9 @@ public class MultiThreadImplementation {
                     + "\n" + "Total Files : " + totalFiles
             );
         }
-        }
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Execution time: " + (end - start) + " ms");
+    }
 }
