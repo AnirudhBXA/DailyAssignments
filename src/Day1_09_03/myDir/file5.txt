@@ -1,5 +1,0 @@
-Streams in Java provide a modern way to process collections.
-They support operations like map, filter, and reduce.
-Streams encourage functional programming.
-They help write cleaner and more readable code.
-Parallel streams can improve performance in some cases.

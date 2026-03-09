@@ -12,9 +12,9 @@ public class MultiThreadImplementation {
 
     private static final Object LOCK = new Object();
 
-    static int totalLines;
-    static int totalWords;
-    static int totalFiles;
+    static int totalLines = 0;
+    static int totalWords = 0;
+    static int totalFiles = 0;
 
     private static void readingSingleFile(File file){
         try{
@@ -51,7 +51,6 @@ public class MultiThreadImplementation {
 
         long start = System.currentTimeMillis();
 
-        ExecutorService executor = Executors.newFixedThreadPool(4);
 
         File directory = new File("C:\\Users\\MyakamAnirudh\\Desktop\\DailyAssignments\\src\\Day1_09_03\\myDir");
 
@@ -67,23 +66,27 @@ public class MultiThreadImplementation {
                     return file.getName().endsWith(".txt");
                 })
                 .sorted(new FileSortingComparator())
-                .limit(100)
                 .toArray(File[]::new);
 
-        for (File file : files) {
-            executor.submit(() -> {
-                readingSingleFile(file);
-            });
+        for(int i = 0; i < files.length ; i+=100){
+
+            ExecutorService executor = Executors.newFixedThreadPool(4);
+            File[] batch = Arrays.stream(files).skip(i).limit(100).toArray(File[]::new);
+            for (File file : batch) {
+                executor.submit(() -> {
+                    readingSingleFile(file);
+                });
+            }
+
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.MINUTES);
         }
 
-        executor.shutdown();
-        if(executor.awaitTermination(10, TimeUnit.MINUTES)){
-            System.out.println("----------------\n    Summary\n----------------");
-            System.out.println("Total Lines : " + totalLines
-                    + "\n" + "Total Words : " + totalWords
-                    + "\n" + "Total Files : " + totalFiles
-            );
-        }
+        System.out.println("----------------\n    Summary\n----------------");
+        System.out.println("Total Lines : " + totalLines
+                + "\n" + "Total Words : " + totalWords
+                + "\n" + "Total Files : " + totalFiles
+        );
 
         long end = System.currentTimeMillis();
 

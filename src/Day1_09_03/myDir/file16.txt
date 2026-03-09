@@ -1,4 +1,0 @@
-Synchronization in Java prevents multiple threads from accessing shared resources simultaneously.
-The synchronized keyword provides intrinsic locking.
-Locks ensure thread safety but may reduce performance if overused.
-Careful design is required when building concurrent systems.

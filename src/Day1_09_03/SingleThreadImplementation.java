@@ -27,37 +27,40 @@ public class SingleThreadImplementation {
                     return file.getName().endsWith(".txt");
                 })
                 .sorted(new FileSortingComparator())
-                .limit(100)
                 .toArray(File[]::new);
 
-        for (File file : files) {
+        for(int i = 0; i < files.length ; i+=100){
+            File[] batch = Arrays.stream(files).skip(i).limit(100).toArray(File[]::new);
 
-            System.out.println( "File : " + file.getName());
+            for (File file : batch) {
 
-            try{
-                BufferedReader br = new BufferedReader(new FileReader(file));
+                System.out.println( "File : " + file.getName());
 
-                int lineCount = 0;
-                int wordCount = 0;
+                try{
+                    BufferedReader br = new BufferedReader(new FileReader(file));
 
-                while (true) {
-                    String line = br.readLine();
-                    if (line == null) {
-                        break;
+                    int lineCount = 0;
+                    int wordCount = 0;
+
+                    while (true) {
+                        String line = br.readLine();
+                        if (line == null) {
+                            break;
+                        }
+
+                        lineCount++;
+                        String[] words = line.split(" ");
+                        wordCount += words.length;
                     }
 
-                    lineCount++;
-                    String[] words = line.split(" ");
-                    wordCount += words.length;
+                    System.out.println("Lines : " + lineCount + "\n" + "Words : " + wordCount);
+
+                    totalLines += lineCount;
+                    totalWords += wordCount;
+                    totalFiles++;
+                } catch (Exception e){
+                    System.out.println(e.getMessage());
                 }
-
-                System.out.println("Lines : " + lineCount + "\n" + "Words : " + wordCount);
-
-                totalLines += lineCount;
-                totalWords += wordCount;
-                totalFiles++;
-            } catch (Exception e){
-                System.out.println(e.getMessage());
             }
         }
 

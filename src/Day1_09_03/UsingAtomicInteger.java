@@ -50,9 +50,6 @@ public class UsingAtomicInteger {
     public static void main(String[] args) throws InterruptedException {
         long start = System.currentTimeMillis();
 
-        CountDownLatch countDownLatch;
-
-        ExecutorService executor = Executors.newFixedThreadPool(4);
 
         File directory = new File("C:\\Users\\MyakamAnirudh\\Desktop\\DailyAssignments\\src\\Day1_09_03\\myDir");
 
@@ -68,20 +65,29 @@ public class UsingAtomicInteger {
                     return file.getName().endsWith(".txt");
                 })
                 .sorted(new FileSortingComparator())
-                .limit(100)
                 .toArray(File[]::new);
 
-        countDownLatch = new CountDownLatch(files.length);
 
-        for (File file : files) {
-            executor.submit(() -> {
-                readingSingleFile(file);
-                countDownLatch.countDown();
-            });
+
+        for(int i = 0; i < files.length ; i+=100){
+
+            CountDownLatch countDownLatch;
+            ExecutorService executor = Executors.newFixedThreadPool(4);
+
+            File[] batch = Arrays.stream(files).skip(i).limit(100).toArray(File[]::new);
+
+            countDownLatch = new CountDownLatch(batch.length);
+            for (File file : batch) {
+                executor.submit(() -> {
+                    readingSingleFile(file);
+                    countDownLatch.countDown();
+                });
+            }
+
+            executor.shutdown();
+            countDownLatch.await();
         }
 
-        executor.shutdown();
-        countDownLatch.await();
         System.out.println("----------------\n    Summary\n----------------");
         System.out.println("Total Lines : " + totalLines.get()
                 + "\n" + "Total Words : " + totalWords.get()
